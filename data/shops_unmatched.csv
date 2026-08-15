@@ -1,6 +1,7 @@
 ﻿tempId,name,phone,addressRaw,floorGuess,source,matchMethod,notes
 U019,최지연국어교습소,,"서울특별시 서초구 잠원로4길 50",,public,name-only,층·호 미확인
 U021,안목안경,0502-1937-0110,"서울특별시 서초구 잠원로4길 50",,portal,name-only,이 건물. 층·호 미확인
+U022,모바필라테스,,"서울특별시 서초구 잠원동 60-3 서관",,portal,name-only,서관. 층·호 미확인. 상호 모바스튜디오/모바피티앤필라테스
 U004,메이플자이단지내태양공인중개사사무소,,"서울 서초구 잠원동",,portal,name-only,이 상가 여부 미확인
 U007,메이플당근공인중개사사무소,,"서울 서초구 잠원동",,portal,name-only,이 상가 여부 미확인
 U010,반포대성공인중개사사무소,,"서울 서초구 잠원동",,portal,name-only,이 상가 여부 미확인
