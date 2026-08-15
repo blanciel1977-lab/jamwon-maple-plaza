@@ -78,12 +78,20 @@
     main { padding-bottom: 48px; }
     h2 { font-size: 1.05rem; margin: 24px 0 10px; }
     .count { color: var(--muted); font-weight: 400; }
+    .floor-block { margin-bottom: 28px; }
+    .floor-heading {
+      font-size: 1rem;
+      margin: 0 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--ink);
+    }
     .tables {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
       align-items: start;
     }
+    .unknown-block { margin-top: 12px; }
     .table-wrap { overflow-x: auto; }
     .table-title {
       font-size: 0.85rem;
@@ -95,7 +103,6 @@
     .table-title.east { background: #dce8e2; color: var(--east); }
     .table-title.west { background: #eadfd6; color: var(--west); }
     .table-title.unknown { background: #e4e2dc; color: var(--muted); }
-    .unknown-block { margin-top: 16px; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -113,7 +120,6 @@
       font-weight: 700;
       white-space: nowrap;
     }
-    td.floor { white-space: nowrap; color: var(--muted); width: 4.5em; vertical-align: middle; text-align: center; }
     td.phone { white-space: nowrap; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
@@ -196,9 +202,10 @@
       { name: "최지연국어교습소", hint: "이 건물 · 층 미확인" }
     ];
 
-    const FLOOR_LABEL = { ALL: "전체", B1: "지하1층", "1": "1층", "2": "2층", "3": "3층", "4": "4층", "5": "5층" };
+    const FLOOR_LABEL = { ALL: "전체", "1": "1층", "2": "2층", "3": "3층", "4": "4층", "5": "5층", B1: "지하1층" };
     const FLOOR_ORDER = ["1", "2", "3", "4", "5", "B1"];
     const WING_LABEL = { ALL: "전체", 동관: "동관", 서관: "서관", 미확인: "관 미확인" };
+    const WING_TITLE = { 동관: "동관 (1동)", 서관: "서관 (2동)", 미확인: "동·서 미확인" };
     let floor = "ALL";
     let wing = "ALL";
 
@@ -234,22 +241,12 @@
 
     function shopTable(list) {
       if (!list.length) return `<p class="empty">없음</p>`;
-      const sorted = sortShops(list);
-      const rows = sorted.map((s, i) => {
+      const rows = sortShops(list).map((s) => {
         const phone = s.phone
           ? `<a href="${telHref(s.phone)}">${s.phone}</a>`
           : "—";
         const name = s.sign ? `${s.name}<div class="empty">${s.sign}</div>` : s.name;
-        const firstOfFloor = i === 0 || sorted[i - 1].floor !== s.floor;
-        let span = 1;
-        if (firstOfFloor) {
-          while (i + span < sorted.length && sorted[i + span].floor === s.floor) span += 1;
-        }
-        const floorCell = firstOfFloor
-          ? `<td class="floor" rowspan="${span}">${FLOOR_LABEL[s.floor]}</td>`
-          : "";
         return `<tr>
-          ${floorCell}
           <td>${name}</td>
           <td>${s.ho}</td>
           <td class="phone">${phone}</td>
@@ -257,7 +254,7 @@
         </tr>`;
       }).join("");
       return `<div class="table-wrap"><table>
-        <thead><tr><th>층</th><th>상호</th><th>호수</th><th>전화</th><th>업종</th></tr></thead>
+        <thead><tr><th>상호</th><th>호수</th><th>전화</th><th>업종</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>`;
     }
@@ -279,25 +276,29 @@
       document.getElementById("shop-count").textContent = `(${shops.length})`;
       document.getElementById("pending-count").textContent = `(${pending.length})`;
 
-      const east = shops.filter((s) => s.wing === "동관");
-      const west = shops.filter((s) => s.wing === "서관");
-      const unknown = shops.filter((s) => s.wing === "미확인");
-      const unknownTable = unknown.length
-        ? `<div class="unknown-block"><div class="table-title unknown">동·서 미확인 (층만 확인)</div>${shopTable(unknown)}</div>`
-        : "";
       if (!shops.length) {
         document.getElementById("shops").innerHTML = `<p class="empty">이 조건에 해당하는 가게가 없습니다.</p>`;
-      } else if (wing === "동관") {
-        document.getElementById("shops").innerHTML = `<div class="table-title east">동관 (1동)</div>${shopTable(east)}`;
-      } else if (wing === "서관") {
-        document.getElementById("shops").innerHTML = `<div class="table-title west">서관 (2동)</div>${shopTable(west)}`;
-      } else if (wing === "미확인") {
-        document.getElementById("shops").innerHTML = `<div class="table-title unknown">동·서 미확인</div>${shopTable(unknown)}`;
       } else {
-        document.getElementById("shops").innerHTML = `<div class="tables">
-          <div><div class="table-title east">동관 (1동)</div>${shopTable(east)}</div>
-          <div><div class="table-title west">서관 (2동)</div>${shopTable(west)}</div>
-        </div>${unknownTable}`;
+        const floors = FLOOR_ORDER.filter((f) => shops.some((s) => s.floor === f));
+        document.getElementById("shops").innerHTML = floors.map((f) => {
+          const onFloor = shops.filter((s) => s.floor === f);
+          const east = onFloor.filter((s) => s.wing === "동관");
+          const west = onFloor.filter((s) => s.wing === "서관");
+          const unknown = onFloor.filter((s) => s.wing === "미확인");
+          const pair = [];
+          if (east.length) pair.push(`<div><div class="table-title east">${WING_TITLE["동관"]}</div>${shopTable(east)}</div>`);
+          if (west.length) pair.push(`<div><div class="table-title west">${WING_TITLE["서관"]}</div>${shopTable(west)}</div>`);
+          const pairHtml = pair.length
+            ? `<div class="${pair.length > 1 ? "tables" : ""}">${pair.join("")}</div>`
+            : "";
+          const unknownHtml = unknown.length
+            ? `<div class="unknown-block"><div class="table-title unknown">${WING_TITLE["미확인"]}</div>${shopTable(unknown)}</div>`
+            : "";
+          return `<div class="floor-block">
+            <h3 class="floor-heading">${FLOOR_LABEL[f]}</h3>
+            ${pairHtml}${unknownHtml}
+          </div>`;
+        }).join("");
       }
 
       document.getElementById("pending").innerHTML = pending.length
