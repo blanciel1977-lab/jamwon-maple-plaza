@@ -1,15 +1,24 @@
 ﻿unitId,zone,floor,rawHo,roadNo,unitStatus,discoveredFrom,notes
-ST-1-2-124,ST,1,2-124,,occupied,portal,서관·출구 앞 추정
-ST-1-2-108,ST,1,2-108,,occupied,portal,서관 1층으로 안내됨
-ML-1-1-102,ML,1,1-102,,occupied,portal,1동 1층. 스트리트인지 몰 내부인지는 현장 확인
-ML-B1-1-B111,ML,B1,1-B111,,occupied,portal,1동 지하
-ML-B1-2-B112,ML,B1,2-B112,,occupied,portal,2동 지하. 일부 출처는 2층으로 표기
-ML-B1-2-B119,ML,B1,2-B119,,occupied,portal,출처 표기 2동 B-119호
-ML-2-203,ML,2,203,,occupied,portal,경희이룸한의원 확장 203~205
-ML-2-204,ML,2,204,,occupied,portal,경희이룸한의원 확장 203~205
-ML-2-205,ML,2,205,,occupied,portal,경희이룸한의원 확장 203~205
-ML-3-311,ML,3,311,,occupied,portal,열린경희한의원 서동 311~312
-ML-3-312,ML,3,312,,occupied,portal,열린경희한의원 서동 311~312
-ML-3-2-314,ML,3,2-314,,occupied,portal,2동 3층
-ML-3-2-321,ML,3,2-321,,occupied,portal,2동 3층
-ML-4-1-413,ML,4,1-413,,occupied,portal,1동 4층
+ST-1-2-124,ST,1,2-124,,occupied,portal,
+ST-1-2-108,ST,1,2-108,,occupied,portal,서관 1층
+ML-1-1-102,ML,1,1-102,,occupied,public,
+ML-B1-1-B111,ML,B1,1-B111,,occupied,portal,
+ML-B1-2-B112,ML,B1,2-B112,,occupied,public,
+ML-B1-2-B119,ML,B1,2-B119,,occupied,portal,
+ML-2-202,ML,2,202~206·214~215,,occupied,public,1동 반포일등정형외과
+ML-2-203,ML,2,203~205,,occupied,public,2동 경희이룸한의원
+ST-2-2-209,ST,2,2-209,,occupied,portal,서관
+ML-2-1-213,ML,2,1-213,,occupied,public,
+ML-3-301,ML,3,301~303,,occupied,public,1동
+ML-3-302,ML,3,302~304,,occupied,public,2동 이손소아
+ML-3-305,ML,3,305~308,,occupied,public,1동 더결의원
+ML-3-2-306,ML,3,2-306,,occupied,public,
+ML-3-311,ML,3,311~312,,occupied,public,서동
+ML-3-2-314,ML,3,2-314,,occupied,public,
+ML-3-2-321,ML,3,2-321,,occupied,public,
+ML-4-401,ML,4,401·402·407,,occupied,public,1동 잠원숲
+ML-4-W2-401,ML,4,서관2-401~405,,occupied,public,성모하나내과
+ML-4-405,ML,4,405~406,,occupied,public,1동 웰유
+ML-4-1-413,ML,4,1-413,,occupied,public,
+ML-5-501,ML,5,501~502,,occupied,public,1동
+ML-5-504,ML,5,504~509,,occupied,portal,서관 해피부과
