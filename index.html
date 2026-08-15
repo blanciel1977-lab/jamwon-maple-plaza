@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>메이플자이 상가</title>
-  <meta name="description" content="잠원동 메이플자이몰·스트리트 상가 초안. 상호, 전화, 주소." />
+  <meta name="description" content="잠원동 메이플자이 상가 동관·서관. 상호, 전화, 주소." />
   <style>
     :root {
       --bg: #f4f1ea;
@@ -14,6 +14,8 @@
       --card: #fffcf7;
       --accent: #8b3a2a;
       --chip: #ece6dc;
+      --east: #2c4a3e;
+      --west: #6b3a28;
     }
     * { box-sizing: border-box; }
     body {
@@ -23,11 +25,13 @@
       color: var(--ink);
       line-height: 1.45;
     }
-    header {
-      padding: 28px 20px 16px;
-      max-width: 760px;
+    header, .toolbar, main, footer {
+      max-width: 980px;
       margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
     }
+    header { padding-top: 28px; padding-bottom: 16px; }
     h1 { font-size: 1.5rem; margin: 0 0 8px; font-weight: 700; }
     .sub { color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; }
     .notice {
@@ -36,13 +40,7 @@
       border-top: 1px solid var(--line);
       padding-top: 12px;
     }
-    .toolbar {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 0 20px 16px;
-      display: grid;
-      gap: 10px;
-    }
+    .toolbar { display: grid; gap: 10px; padding-bottom: 16px; }
     input[type="search"] {
       width: 100%;
       padding: 12px 14px;
@@ -51,8 +49,8 @@
       font-size: 1rem;
       background: var(--card);
     }
-    .floors { display: flex; flex-wrap: wrap; gap: 6px; }
-    .floors button {
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips button {
       border: 1px solid var(--line);
       background: var(--chip);
       color: var(--ink);
@@ -61,48 +59,64 @@
       font-size: 0.85rem;
       cursor: pointer;
     }
-    .floors button.active {
+    .chips button.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
     }
-    main { max-width: 760px; margin: 0 auto; padding: 0 20px 48px; }
+    main { padding-bottom: 48px; }
     h2 { font-size: 1.05rem; margin: 24px 0 10px; }
+    h3 { font-size: 0.95rem; margin: 0 0 10px; }
     .count { color: var(--muted); font-weight: 400; }
+    .floor-block { margin-bottom: 22px; }
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .col-head {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .col-head.east { background: #dce8e2; color: var(--east); }
+    .col-head.west { background: #eadfd6; color: var(--west); }
     article {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       margin-bottom: 8px;
     }
-    .name { font-weight: 700; font-size: 1.05rem; }
-    .meta { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
-    .phone a, .addr { display: block; margin-top: 6px; font-size: 0.95rem; }
+    .name { font-weight: 700; font-size: 1.02rem; }
+    .meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    .phone a, .addr { display: block; margin-top: 6px; font-size: 0.92rem; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .empty { color: var(--muted); padding: 12px 0; }
-    footer {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 0 20px 40px;
-      font-size: 0.8rem;
-      color: var(--muted);
+    .empty { color: var(--muted); font-size: 0.9rem; padding: 8px 2px; }
+    footer { padding-bottom: 40px; font-size: 0.8rem; color: var(--muted); }
+    @media (max-width: 720px) {
+      .cols { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>메이플자이 상가</h1>
-    <p class="sub">서울 서초구 잠원로4길 50 · 몰 + 스트리트</p>
+    <p class="sub">서울 서초구 잠원로4길 50 · 동관(1동) · 서관(2동)</p>
     <p class="notice">
-      잠원로4길 50으로 호수가 확인된 가게입니다. 현장 확인 전 초안이며 상호·전화는 바뀔 수 있습니다.
+      호수 앞자리 1은 동관, 2는 서관입니다. 현장 확인 전 초안입니다.
     </p>
   </header>
 
   <div class="toolbar">
     <input type="search" id="q" placeholder="상호, 호수, 전화 검색" autocomplete="off" />
-    <div class="floors" id="floors"></div>
+    <div class="chips" id="wings"></div>
+    <div class="chips" id="floors"></div>
   </div>
 
   <main>
@@ -112,69 +126,72 @@
     </section>
     <section>
       <h2>호수 미확인 <span class="count" id="pending-count"></span></h2>
-      <p class="notice">이 주소(잠원로4길 50)로 확인됐지만 호수가 없는 곳입니다.</p>
+      <p class="notice">잠원로4길 50은 맞지만 동관·서관·호수가 아직 없는 곳입니다.</p>
       <div id="pending"></div>
     </section>
   </main>
 
-  <footer>
-    잠원동 · 잠원로4길 50 · 2026-08-15 공개자료 초안
-  </footer>
+  <footer>잠원동 · 잠원로4길 50 · 2026-08-15 공개자료 초안</footer>
 
   <script>
     const SHOPS = [
-      { id: "S001", name: "매일부동산", sign: "메이플매일공인중개사사무소", phone: "02-533-1997", address: "잠원로4길 50, 1층 2-124호", category: "부동산", floor: "1", zone: "스트리트", ho: "2-124" },
-      { id: "S002", name: "메이플자이공인중개사사무소", sign: "", phone: "", address: "잠원로4길 50, 서관 1층 2-108호", category: "부동산", floor: "1", zone: "스트리트", ho: "2-108" },
-      { id: "S003", name: "새생명약국", sign: "", phone: "02-533-7168", address: "잠원로4길 50, 1층 1-102호", category: "의료", floor: "1", zone: "몰", ho: "1-102" },
-      { id: "S004", name: "파리바게뜨 잠원역메이플자이점", sign: "", phone: "0504-3118-2651", address: "잠원로4길 50, 지하1층 1-B111호", category: "생활", floor: "B1", zone: "몰", ho: "1-B111" },
-      { id: "S005", name: "북촌손만두 잠원메이플자이점", sign: "", phone: "", address: "잠원로4길 50, 2-B112호", category: "음식", floor: "B1", zone: "몰", ho: "2-B112" },
-      { id: "S006", name: "샐러링 잠원메이플자이점", sign: "", phone: "", address: "잠원로4길 50, 2동 B-119호", category: "음식", floor: "B1", zone: "몰", ho: "2-B119" },
-      { id: "S013", name: "반포일등정형외과의원", sign: "", phone: "02-534-9111", address: "잠원로4길 50, 1동 2층 202~206·214~215호", category: "의료", floor: "2", zone: "몰", ho: "202~206, 214~215" },
-      { id: "S007", name: "경희이룸한의원", sign: "", phone: "02-593-8575", address: "잠원로4길 50, 2동 2층 203~205호", category: "의료", floor: "2", zone: "몰", ho: "203~205" },
-      { id: "S023", name: "더하노이풋앤바디", sign: "잠원메이플자이점", phone: "02-6954-2399", address: "잠원로4길 50, 서관 2-209호", category: "생활", floor: "2", zone: "스트리트", ho: "2-209" },
-      { id: "S021", name: "365연약국", sign: "", phone: "02-533-3653", address: "잠원로4길 50, 2층 1-213호", category: "의료", floor: "2", zone: "몰", ho: "1-213" },
-      { id: "S014", name: "연세투핸즈치과교정과의원", sign: "", phone: "02-6221-2875", address: "잠원로4길 50, 1동 3층 301~303호", category: "의료", floor: "3", zone: "몰", ho: "301~303" },
-      { id: "S015", name: "이손소아청소년과의원", sign: "", phone: "02-533-8254", address: "잠원로4길 50, 2동 302~304호", category: "의료", floor: "3", zone: "몰", ho: "302~304" },
-      { id: "S012", name: "더결의원", sign: "피부과", phone: "02-6949-1660", address: "잠원로4길 50, 1동 305~308호", category: "의료", floor: "3", zone: "몰", ho: "305~308" },
-      { id: "S022", name: "신우성약국", sign: "", phone: "02-536-3174", address: "잠원로4길 50, 3층 2-306호", category: "의료", floor: "3", zone: "몰", ho: "2-306" },
-      { id: "S008", name: "열린경희한의원", sign: "", phone: "02-2135-4701", address: "잠원로4길 50, 서동 3층 311~312호", category: "의료", floor: "3", zone: "몰", ho: "311~312" },
-      { id: "S009", name: "잠원드림약국", sign: "", phone: "0507-1479-2461", address: "잠원로4길 50, 3층 2-314호", category: "의료", floor: "3", zone: "몰", ho: "2-314" },
-      { id: "S010", name: "3층메이플약국", sign: "", phone: "0507-1309-9572", address: "잠원로4길 50, 3층 2-321호", category: "의료", floor: "3", zone: "몰", ho: "2-321" },
-      { id: "S024", name: "화음치과의원", sign: "", phone: "02-3478-2804", address: "잠원로4길 50, 동관 3층", category: "의료", floor: "3", zone: "몰", ho: "동관" },
-      { id: "S016", name: "잠원숲정신건강의학과의원", sign: "", phone: "02-6951-0777", address: "잠원로4길 50, 1동 401·402·407호", category: "의료", floor: "4", zone: "몰", ho: "401·402·407" },
-      { id: "S018", name: "성모하나내과의원", sign: "", phone: "02-6254-3511", address: "잠원로4길 50, 서관2 401~405호", category: "의료", floor: "4", zone: "몰", ho: "서관2 401~405" },
-      { id: "S017", name: "웰유가정의학과의원", sign: "", phone: "", address: "잠원로4길 50, 1동 4층 405~406호", category: "의료", floor: "4", zone: "몰", ho: "405~406" },
-      { id: "S011", name: "마음약국", sign: "", phone: "02-595-7857", address: "잠원로4길 50, 4층 1-413호", category: "의료", floor: "4", zone: "몰", ho: "1-413" },
-      { id: "S019", name: "연세꿈꾸는치과의원", sign: "", phone: "02-537-2070", address: "잠원로4길 50, 1동 5층 501~502호", category: "의료", floor: "5", zone: "몰", ho: "501~502" },
-      { id: "S020", name: "해피부과의원", sign: "", phone: "02-532-7582", address: "잠원로4길 50, 서관 5층 504~509호", category: "의료", floor: "5", zone: "몰", ho: "504~509" }
+      { id: "S004", name: "파리바게뜨 잠원역메이플자이점", sign: "", phone: "0504-3118-2651", address: "지하1층 1-B111호", category: "생활", floor: "B1", wing: "동관", ho: "1-B111" },
+      { id: "S003", name: "새생명약국", sign: "", phone: "02-533-7168", address: "1층 1-102호", category: "의료", floor: "1", wing: "동관", ho: "1-102" },
+      { id: "S013", name: "반포일등정형외과의원", sign: "", phone: "02-534-9111", address: "1동 2층 202~206·214~215호", category: "의료", floor: "2", wing: "동관", ho: "202~206, 214~215" },
+      { id: "S021", name: "365연약국", sign: "", phone: "02-533-3653", address: "2층 1-213호", category: "의료", floor: "2", wing: "동관", ho: "1-213" },
+      { id: "S014", name: "연세투핸즈치과교정과의원", sign: "", phone: "02-6221-2875", address: "1동 3층 301~303호", category: "의료", floor: "3", wing: "동관", ho: "301~303" },
+      { id: "S012", name: "더결의원", sign: "피부과", phone: "02-6949-1660", address: "1동 305~308호", category: "의료", floor: "3", wing: "동관", ho: "305~308" },
+      { id: "S024", name: "화음치과의원", sign: "", phone: "02-3478-2804", address: "동관 3층", category: "의료", floor: "3", wing: "동관", ho: "동관 3층" },
+      { id: "S016", name: "잠원숲정신건강의학과의원", sign: "", phone: "02-6951-0777", address: "1동 401·402·407호", category: "의료", floor: "4", wing: "동관", ho: "401·402·407" },
+      { id: "S017", name: "웰유가정의학과의원", sign: "", phone: "", address: "1동 4층 405~406호", category: "의료", floor: "4", wing: "동관", ho: "405~406" },
+      { id: "S011", name: "마음약국", sign: "", phone: "02-595-7857", address: "4층 1-413호", category: "의료", floor: "4", wing: "동관", ho: "1-413" },
+      { id: "S019", name: "연세꿈꾸는치과의원", sign: "", phone: "02-537-2070", address: "1동 5층 501~502호", category: "의료", floor: "5", wing: "동관", ho: "501~502" },
+      { id: "S005", name: "북촌손만두 잠원메이플자이점", sign: "", phone: "", address: "2-B112호", category: "음식", floor: "B1", wing: "서관", ho: "2-B112" },
+      { id: "S006", name: "샐러링 잠원메이플자이점", sign: "", phone: "", address: "2동 B-119호", category: "음식", floor: "B1", wing: "서관", ho: "2-B119" },
+      { id: "S001", name: "매일부동산", sign: "메이플매일공인중개사사무소", phone: "02-533-1997", address: "1층 2-124호", category: "부동산", floor: "1", wing: "서관", ho: "2-124" },
+      { id: "S002", name: "메이플자이공인중개사사무소", sign: "", phone: "", address: "서관 1층 2-108호", category: "부동산", floor: "1", wing: "서관", ho: "2-108" },
+      { id: "S007", name: "경희이룸한의원", sign: "", phone: "02-593-8575", address: "2동 2층 203~205호", category: "의료", floor: "2", wing: "서관", ho: "203~205" },
+      { id: "S023", name: "더하노이풋앤바디", sign: "잠원메이플자이점", phone: "02-6954-2399", address: "서관 2-209호", category: "생활", floor: "2", wing: "서관", ho: "2-209" },
+      { id: "S015", name: "이손소아청소년과의원", sign: "", phone: "02-533-8254", address: "2동 302~304호", category: "의료", floor: "3", wing: "서관", ho: "302~304" },
+      { id: "S022", name: "신우성약국", sign: "", phone: "02-536-3174", address: "3층 2-306호", category: "의료", floor: "3", wing: "서관", ho: "2-306" },
+      { id: "S008", name: "열린경희한의원", sign: "", phone: "02-2135-4701", address: "서동 3층 311~312호", category: "의료", floor: "3", wing: "서관", ho: "311~312" },
+      { id: "S009", name: "잠원드림약국", sign: "", phone: "0507-1479-2461", address: "3층 2-314호", category: "의료", floor: "3", wing: "서관", ho: "2-314" },
+      { id: "S010", name: "3층메이플약국", sign: "", phone: "0507-1309-9572", address: "3층 2-321호", category: "의료", floor: "3", wing: "서관", ho: "2-321" },
+      { id: "S018", name: "성모하나내과의원", sign: "", phone: "02-6254-3511", address: "서관2 401~405호", category: "의료", floor: "4", wing: "서관", ho: "서관2 401~405" },
+      { id: "S020", name: "해피부과의원", sign: "", phone: "02-532-7582", address: "서관 5층 504~509호", category: "의료", floor: "5", wing: "서관", ho: "504~509" }
     ];
 
     const PENDING = [
-      { name: "이마트 에브리데이 잠원메이플자이점", hint: "잠원로4길 50 · 지하 1층 추정 · 호수 없음" },
-      { name: "크린토피아 잠원 메이플자이점", hint: "잠원로4길 50 · 호수 없음" },
-      { name: "동경규동 메이플자이점", hint: "잠원로4길 50 · 호수 없음" },
-      { name: "오공김밥", hint: "잠원로4길 50 · 호수 없음" },
-      { name: "메이플자이 비발디음악학원", hint: "잠원로4길 50 · 호수 없음" },
-      { name: "최지연국어교습소", hint: "잠원로4길 50 · 호수 없음" }
+      { name: "이마트 에브리데이 잠원메이플자이점", hint: "지하 1층 추정" },
+      { name: "크린토피아 잠원 메이플자이점", hint: "호수 없음" },
+      { name: "동경규동 메이플자이점", hint: "호수 없음" },
+      { name: "오공김밥", hint: "호수 없음" },
+      { name: "메이플자이 비발디음악학원", hint: "호수 없음" },
+      { name: "최지연국어교습소", hint: "호수 없음" }
     ];
 
-    const FLOOR_LABEL = { ALL: "전체", B1: "지하 1층", "1": "1층", "2": "2층", "3": "3층", "4": "4층", "5": "5층" };
+    const FLOOR_LABEL = { ALL: "전체 층", B1: "지하 1층", "1": "1층", "2": "2층", "3": "3층", "4": "4층", "5": "5층" };
+    const FLOOR_ORDER = ["B1", "1", "2", "3", "4", "5"];
+    const WING_LABEL = { ALL: "동관·서관", 동관: "동관", 서관: "서관" };
     let floor = "ALL";
+    let wing = "ALL";
 
-    const floorBar = document.getElementById("floors");
-    Object.keys(FLOOR_LABEL).forEach((key) => {
-      const btn = document.createElement("button");
-      btn.textContent = FLOOR_LABEL[key];
-      btn.dataset.floor = key;
-      if (key === "ALL") btn.classList.add("active");
-      btn.addEventListener("click", () => {
-        floor = key;
-        [...floorBar.children].forEach((el) => el.classList.toggle("active", el.dataset.floor === key));
-        render();
+    function bindChips(el, map, get, set) {
+      Object.keys(map).forEach((key) => {
+        const btn = document.createElement("button");
+        btn.textContent = map[key];
+        btn.dataset.key = key;
+        if (key === get()) btn.classList.add("active");
+        btn.addEventListener("click", () => {
+          set(key);
+          [...el.children].forEach((b) => b.classList.toggle("active", b.dataset.key === key));
+          render();
+        });
+        el.appendChild(btn);
       });
-      floorBar.appendChild(btn);
-    });
-
+    }
+    bindChips(document.getElementById("wings"), WING_LABEL, () => wing, (v) => { wing = v; });
+    bindChips(document.getElementById("floors"), FLOOR_LABEL, () => floor, (v) => { floor = v; });
     document.getElementById("q").addEventListener("input", render);
 
     function telHref(phone) {
@@ -189,33 +206,52 @@
       return `<article>
         <div class="name">${shop.name}</div>
         ${sign}
-        <div class="meta">${FLOOR_LABEL[shop.floor]} · ${shop.zone} · ${shop.category} · ${shop.ho}</div>
+        <div class="meta">${shop.category} · ${shop.ho}</div>
         ${phone}
         <div class="addr">${shop.address}</div>
       </article>`;
+    }
+
+    function col(title, cls, list) {
+      const body = list.length ? list.map(card).join("") : `<p class="empty">없음</p>`;
+      return `<div><div class="col-head ${cls}">${title}</div>${body}</div>`;
     }
 
     function render() {
       const q = document.getElementById("q").value.trim().toLowerCase();
       const shops = SHOPS.filter((s) => {
         if (floor !== "ALL" && s.floor !== floor) return false;
+        if (wing !== "ALL" && s.wing !== wing) return false;
         if (!q) return true;
-        return [s.name, s.sign, s.phone, s.address, s.ho, s.category].join(" ").toLowerCase().includes(q);
+        return [s.name, s.sign, s.phone, s.address, s.ho, s.category, s.wing].join(" ").toLowerCase().includes(q);
       });
       const pending = PENDING.filter((s) => {
-        if (floor !== "ALL") return false;
+        if (floor !== "ALL" || wing !== "ALL") return false;
         if (!q) return true;
         return [s.name, s.hint].join(" ").toLowerCase().includes(q);
       });
 
       document.getElementById("shop-count").textContent = `(${shops.length})`;
       document.getElementById("pending-count").textContent = `(${pending.length})`;
-      document.getElementById("shops").innerHTML = shops.length
-        ? shops.map(card).join("")
-        : `<p class="empty">이 층·검색에 해당하는 호실 확인 가게가 없습니다.</p>`;
+
+      const floors = floor === "ALL" ? FLOOR_ORDER.filter((f) => shops.some((s) => s.floor === f)) : [floor];
+      document.getElementById("shops").innerHTML = floors.length
+        ? floors.map((f) => {
+            const east = shops.filter((s) => s.floor === f && s.wing === "동관");
+            const west = shops.filter((s) => s.floor === f && s.wing === "서관");
+            if (wing === "동관") {
+              return `<div class="floor-block"><h3>${FLOOR_LABEL[f]}</h3>${col("동관 (1동)", "east", east)}</div>`;
+            }
+            if (wing === "서관") {
+              return `<div class="floor-block"><h3>${FLOOR_LABEL[f]}</h3>${col("서관 (2동)", "west", west)}</div>`;
+            }
+            return `<div class="floor-block"><h3>${FLOOR_LABEL[f]}</h3><div class="cols">${col("동관 (1동)", "east", east)}${col("서관 (2동)", "west", west)}</div></div>`;
+          }).join("")
+        : `<p class="empty">이 조건에 해당하는 가게가 없습니다.</p>`;
+
       document.getElementById("pending").innerHTML = pending.length
         ? pending.map((s) => `<article><div class="name">${s.name}</div><div class="meta">${s.hint}</div></article>`).join("")
-        : (floor === "ALL" ? `<p class="empty">없습니다.</p>` : `<p class="empty">호수 미확인은 층 필터를 전체로 두면 보입니다.</p>`);
+        : `<p class="empty">${floor === "ALL" && wing === "ALL" ? "없습니다." : "호수 미확인은 필터를 전체로 두면 보입니다."}</p>`;
     }
 
     render();
