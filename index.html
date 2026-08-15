@@ -113,7 +113,7 @@
       font-weight: 700;
       white-space: nowrap;
     }
-    td.floor { white-space: nowrap; color: var(--muted); width: 4.5em; }
+    td.floor { white-space: nowrap; color: var(--muted); width: 4.5em; vertical-align: middle; text-align: center; }
     td.phone { white-space: nowrap; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
@@ -234,13 +234,22 @@
 
     function shopTable(list) {
       if (!list.length) return `<p class="empty">없음</p>`;
-      const rows = sortShops(list).map((s) => {
+      const sorted = sortShops(list);
+      const rows = sorted.map((s, i) => {
         const phone = s.phone
           ? `<a href="${telHref(s.phone)}">${s.phone}</a>`
           : "—";
         const name = s.sign ? `${s.name}<div class="empty">${s.sign}</div>` : s.name;
+        const firstOfFloor = i === 0 || sorted[i - 1].floor !== s.floor;
+        let span = 1;
+        if (firstOfFloor) {
+          while (i + span < sorted.length && sorted[i + span].floor === s.floor) span += 1;
+        }
+        const floorCell = firstOfFloor
+          ? `<td class="floor" rowspan="${span}">${FLOOR_LABEL[s.floor]}</td>`
+          : "";
         return `<tr>
-          <td class="floor">${FLOOR_LABEL[s.floor]}</td>
+          ${floorCell}
           <td>${name}</td>
           <td>${s.ho}</td>
           <td class="phone">${phone}</td>
