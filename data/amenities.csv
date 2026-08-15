@@ -1,0 +1,3 @@
+﻿amenityId,zone,floor,name,kind,planX,planY,notes
+A001,ML,B1,잠원역 2번 출구 연결,station,,,좌표는 평면도 이후
+A002,ST,1,잠원역 1·2번 출구 대로변,entrance,,,스트리트 상가 유입

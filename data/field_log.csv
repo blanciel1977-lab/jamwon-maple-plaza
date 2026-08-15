@@ -1,0 +1,5 @@
+﻿visitedAt,zone,floor,rawHo,nameSign,phone,unitStatus,category,photoHo,photoSign,notes
+,ST,1,2-124,매일부동산,02-533-1997,occupied,부동산,,,포털 초안. 전화 1997 vs 1900
+,ST,1,2-108,메이플자이공인중개사사무소,,occupied,부동산,,,서관 1층. 전화는 현장에서
+,ML,1,1-102,새생명약국,02-533-7168,occupied,의료,,,1동 1층. 스트리트면 ST로 바꿀 것
+,ST,1,,,,,,,,한 칸씩 끝까지. 셔터=공실 아님. 애매하면 unknown

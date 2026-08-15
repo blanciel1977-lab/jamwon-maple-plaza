@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>메이플자이 상가</title>
+  <meta name="description" content="잠원동 메이플자이몰·스트리트 상가 초안. 상호, 전화, 주소." />
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #1c1916;
+      --muted: #6b645c;
+      --line: #ddd6cb;
+      --card: #fffcf7;
+      --accent: #8b3a2a;
+      --chip: #ece6dc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header {
+      padding: 28px 20px 16px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 1.5rem; margin: 0 0 8px; font-weight: 700; }
+    .sub { color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; }
+    .notice {
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .toolbar {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 16px;
+      display: grid;
+      gap: 10px;
+    }
+    input[type="search"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--card);
+    }
+    .floors { display: flex; flex-wrap: wrap; gap: 6px; }
+    .floors button {
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .floors button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 0 20px 48px; }
+    h2 { font-size: 1.05rem; margin: 24px 0 10px; }
+    .count { color: var(--muted); font-weight: 400; }
+    article {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .name { font-weight: 700; font-size: 1.05rem; }
+    .meta { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+    .phone a, .addr { display: block; margin-top: 6px; font-size: 0.95rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .empty { color: var(--muted); padding: 12px 0; }
+    footer {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>메이플자이 상가</h1>
+    <p class="sub">서울 서초구 잠원로4길 50 · 몰 + 스트리트</p>
+    <p class="notice">
+      호실이 확인된 가게만 위에 둡니다. 현장 확인 전 초안이며, 상호·전화는 바뀔 수 있습니다.
+      1차 목표는 스트리트 1층 현장 대조입니다.
+    </p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="상호, 호수, 전화 검색" autocomplete="off" />
+    <div class="floors" id="floors"></div>
+  </div>
+
+  <main>
+    <section>
+      <h2>호실 확인 <span class="count" id="shop-count"></span></h2>
+      <div id="shops"></div>
+    </section>
+    <section>
+      <h2>호수 미확인 <span class="count" id="pending-count"></span></h2>
+      <p class="notice">네이버 목록 등으로 이름만 있는 곳입니다. 잠원로4길 50이 아니면 이 상가가 아닐 수 있습니다.</p>
+      <div id="pending"></div>
+    </section>
+  </main>
+
+  <footer>
+    잠원동 · 2026-08-15 초안 · 공공 인허가·공개 페이지 기준
+  </footer>
+
+  <script>
+    const SHOPS = [
+      { id: "S001", name: "매일부동산", sign: "메이플매일공인중개사사무소", phone: "02-533-1997", address: "잠원로4길 50, 1층 2-124호", category: "부동산", floor: "1", zone: "스트리트", ho: "2-124" },
+      { id: "S002", name: "메이플자이공인중개사사무소", sign: "", phone: "", address: "잠원로4길 50, 서관 1층 2-108호", category: "부동산", floor: "1", zone: "스트리트", ho: "2-108" },
+      { id: "S003", name: "새생명약국", sign: "", phone: "02-533-7168", address: "잠원로4길 50, 1층 1-102호", category: "의료", floor: "1", zone: "몰", ho: "1-102" },
+      { id: "S004", name: "파리바게뜨 잠원역메이플자이점", sign: "", phone: "0504-3118-2651", address: "잠원로4길 50, 지하1층 1-B111호", category: "생활", floor: "B1", zone: "몰", ho: "1-B111" },
+      { id: "S005", name: "북촌손만두 잠원메이플자이점", sign: "", phone: "", address: "잠원로4길 50, 2-B112호", category: "음식", floor: "B1", zone: "몰", ho: "2-B112" },
+      { id: "S006", name: "샐러링 잠원메이플자이점", sign: "", phone: "", address: "잠원로4길 50, 2동 B-119호", category: "음식", floor: "B1", zone: "몰", ho: "2-B119" },
+      { id: "S007", name: "경희이룸한의원", sign: "", phone: "02-593-8575", address: "잠원로4길 50, 2동 2층 203~205호", category: "의료", floor: "2", zone: "몰", ho: "203~205" },
+      { id: "S008", name: "열린경희한의원", sign: "", phone: "02-2135-4701", address: "잠원로4길 50, 서동 3층 311~312호", category: "의료", floor: "3", zone: "몰", ho: "311~312" },
+      { id: "S009", name: "잠원드림약국", sign: "", phone: "0507-1479-2461", address: "잠원로4길 50, 3층 2-314호", category: "의료", floor: "3", zone: "몰", ho: "2-314" },
+      { id: "S010", name: "3층메이플약국", sign: "", phone: "0507-1309-9572", address: "잠원로4길 50, 3층 2-321호", category: "의료", floor: "3", zone: "몰", ho: "2-321" },
+      { id: "S011", name: "마음약국", sign: "", phone: "02-595-7857", address: "잠원로4길 50, 4층 1-413호", category: "의료", floor: "4", zone: "몰", ho: "1-413" }
+    ];
+
+    const PENDING = [
+      { name: "이마트 에브리데이 잠원메이플자이점", hint: "지하 1층 추정" },
+      { name: "크린토피아 잠원 메이플자이점", hint: "층·호 없음" },
+      { name: "동경규동 메이플자이점", hint: "층·호 없음" },
+      { name: "메이플자이단지내태양공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "메이플자이경원공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "메이플당근공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "덕우공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "강남일등공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "반포대성공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "부동산올라공인중개사사무소", hint: "부동산 · 상세주소 없음" },
+      { name: "메이플리틀쇼팽음악학원", hint: "음악교육 · 상세주소 없음" },
+      { name: "이렘아트스튜디오", hint: "미술교육 · 상세주소 없음" },
+      { name: "그림담", hint: "미술교육 · 상세주소 없음" },
+      { name: "상위권수학학원 잠원점", hint: "수학교육 · 상세주소 없음" },
+      { name: "애프터", hint: "장소대여 · 상세주소 없음" }
+    ];
+
+    const FLOOR_LABEL = { ALL: "전체", B1: "지하 1층", "1": "1층", "2": "2층", "3": "3층", "4": "4층" };
+    let floor = "ALL";
+
+    const floorBar = document.getElementById("floors");
+    Object.keys(FLOOR_LABEL).forEach((key) => {
+      const btn = document.createElement("button");
+      btn.textContent = FLOOR_LABEL[key];
+      btn.dataset.floor = key;
+      if (key === "ALL") btn.classList.add("active");
+      btn.addEventListener("click", () => {
+        floor = key;
+        [...floorBar.children].forEach((el) => el.classList.toggle("active", el.dataset.floor === key));
+        render();
+      });
+      floorBar.appendChild(btn);
+    });
+
+    document.getElementById("q").addEventListener("input", render);
+
+    function telHref(phone) {
+      return "tel:" + phone.replace(/[^0-9+]/g, "");
+    }
+
+    function card(shop) {
+      const sign = shop.sign ? `<div class="meta">${shop.sign}</div>` : "";
+      const phone = shop.phone
+        ? `<div class="phone"><a href="${telHref(shop.phone)}">${shop.phone}</a></div>`
+        : `<div class="meta">전화 미확인</div>`;
+      return `<article>
+        <div class="name">${shop.name}</div>
+        ${sign}
+        <div class="meta">${FLOOR_LABEL[shop.floor]} · ${shop.zone} · ${shop.category} · ${shop.ho}호</div>
+        ${phone}
+        <div class="addr">${shop.address}</div>
+      </article>`;
+    }
+
+    function render() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const shops = SHOPS.filter((s) => {
+        if (floor !== "ALL" && s.floor !== floor) return false;
+        if (!q) return true;
+        return [s.name, s.sign, s.phone, s.address, s.ho, s.category].join(" ").toLowerCase().includes(q);
+      });
+      const pending = PENDING.filter((s) => {
+        if (floor !== "ALL") return false;
+        if (!q) return true;
+        return [s.name, s.hint].join(" ").toLowerCase().includes(q);
+      });
+
+      document.getElementById("shop-count").textContent = `(${shops.length})`;
+      document.getElementById("pending-count").textContent = `(${pending.length})`;
+      document.getElementById("shops").innerHTML = shops.length
+        ? shops.map(card).join("")
+        : `<p class="empty">이 층·검색에 해당하는 호실 확인 가게가 없습니다.</p>`;
+      document.getElementById("pending").innerHTML = pending.length
+        ? pending.map((s) => `<article><div class="name">${s.name}</div><div class="meta">${s.hint}</div></article>`).join("")
+        : (floor === "ALL" ? `<p class="empty">없습니다.</p>` : `<p class="empty">호수 미확인은 층 필터를 전체로 두면 보입니다.</p>`);
+    }
+
+    render();
+  </script>
+</body>
+</html>

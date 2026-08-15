@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "maple-xi-plaza",
+  "names": ["메이플자이몰", "메이플플라자", "메이플상가", "메이플자이 프라자", "메이플자이 근린생활시설"],
+  "searchAliases": ["메이플자이", "메이플자이몰", "메이플플라자", "메이플상가", "신반포로 251", "신반포로 253", "잠원로4길 50"],
+  "exclude": [
+    "주거동 하단 점포",
+    "단지 부대시설(어린이집, 피트니스, 경로당, 관리사무소 등)",
+    "거목상가·매일상가 등 철거 전 주소",
+    "잠원로4길 33-2 스타빌딩 등 인근 다른 건물"
+  ],
+  "commercialAddress": "서울특별시 서초구 잠원로4길 50",
+  "roadAddresses": [
+    {
+      "roadNo": "251",
+      "road": "서울특별시 서초구 신반포로 251",
+      "label": "1단지"
+    },
+    {
+      "roadNo": "253",
+      "road": "서울특별시 서초구 신반포로 253",
+      "label": "2단지"
+    }
+  ],
+  "lotAddress": "서울특별시 서초구 잠원동 60-3",
+  "altAddresses": ["서울특별시 서초구 잠원로4길 50"],
+  "postalCode": "06522",
+  "wings": ["1동", "2동", "서동", "서관"],
+  "zones": [
+    {
+      "id": "ML",
+      "name": "몰",
+      "note": "지하 역연결 포함 단지 내 상가동. 호수는 1-B111, 2-314처럼 동-호"
+    },
+    {
+      "id": "ST",
+      "name": "스트리트",
+      "note": "잠원역 1·2번 출구 대로변·서관 1층"
+    }
+  ],
+  "unitIdRule": "{zone}-{floor}-{rawHo}",
+  "unitIdExamples": ["ST-1-2-124", "ML-B1-1-B111"],
+  "floorCodes": ["B1", "1", "2", "3", "4", "5"],
+  "floorNormalize": {
+    "지하1층": "B1",
+    "B01": "B1",
+    "1층": "1",
+    "2층": "2",
+    "3층": "3",
+    "4층": "4",
+    "5층": "5"
+  },
+  "hoNormalize": "문에 적힌 그대로 rawHo. 1-B111은 1동 지하 111호로 봄",
+  "categories": ["음식", "카페", "의료", "학원", "부동산", "생활", "기타"],
+  "conflictRule": "field > portal > public. 날짜가 있는 쪽이 이김",
+  "matchMethods": ["unit-exact", "floor-name", "name-only", "unmatched"],
+  "scopeNote": "호실표 없음. 확인된 호실만 추가. 가짜 213실 금지",
+  "firstMilestone": "한 층 현장까지",
+  "firstFloor": "ST-1",
+  "firstFloorNote": "스트리트 1층. 포털 초안: 2-124, 2-108, 1-102",
+  "portalDraftAt": "2026-08-15"
+}
