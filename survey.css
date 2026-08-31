@@ -1,0 +1,143 @@
+@page {
+  size: A4 portrait;
+  margin: 12mm 10mm 12mm;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 10mm 20mm;
+  background: #e9e7e2;
+  color: #000;
+  font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-size: 9pt;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.screen-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  font-size: 10pt;
+}
+.screen-bar a { color: #8b3a2a; }
+.screen-bar span { color: #555; }
+.screen-bar button {
+  border: 1px solid #8b3a2a;
+  background: #8b3a2a;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 10pt;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sheet-head, main { background: #fff; }
+.sheet-head {
+  padding: 8mm 8mm 6mm;
+  border-bottom: 1.6pt solid #000;
+}
+h1 { font-size: 16pt; margin: 0 0 3pt; }
+.where { margin: 0 0 3pt; font-size: 9pt; }
+.stat { margin: 0 0 6pt; font-size: 9pt; font-weight: 700; }
+
+.legend {
+  margin: 0 0 7pt;
+  padding: 0;
+  list-style: none;
+  font-size: 8pt;
+  color: #333;
+}
+.legend li { display: flex; align-items: center; gap: 5pt; margin-bottom: 2pt; }
+.swatch {
+  display: inline-block;
+  width: 12pt;
+  height: 8pt;
+  border: 0.5pt solid #999;
+  background: #e4e4e4;
+}
+.who { margin: 0; font-size: 9pt; letter-spacing: 0.3pt; }
+
+main { padding: 0 8mm 8mm; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 6mm;
+}
+.title-row th {
+  border: 0;
+  border-bottom: 1.2pt solid #000;
+  background: none;
+  font-size: 11pt;
+  padding: 5pt 0 3pt;
+}
+th, td {
+  border: 0.5pt solid #8a8a8a;
+  padding: 2pt 4pt;
+  text-align: left;
+  vertical-align: middle;
+}
+thead th {
+  background: #ddd;
+  font-size: 8pt;
+  font-weight: 700;
+  padding: 3pt 4pt;
+}
+tbody tr { height: 8mm; break-inside: avoid; }
+
+.c-check { width: 8mm; text-align: center; }
+.c-ho { width: 24mm; font-variant-numeric: tabular-nums; }
+.c-name { width: 56mm; font-weight: 700; }
+.c-trade { width: 17mm; font-size: 8pt; font-weight: 400; }
+.c-tel { width: 30mm; font-variant-numeric: tabular-nums; font-size: 8.5pt; }
+.c-memo { width: auto; }
+
+.sub {
+  display: block;
+  font-size: 7.5pt;
+  font-weight: 400;
+  color: #444;
+}
+.box {
+  display: inline-block;
+  width: 9pt;
+  height: 9pt;
+  border: 0.8pt solid #000;
+}
+.no-ho { background: #e4e4e4; }
+.no-ho .c-ho::after {
+  content: "호수 ?";
+  font-size: 7.5pt;
+  color: #444;
+}
+.blank td { background: #fafafa; }
+.dash { color: #777; }
+
+.note {
+  font-size: 8pt;
+  color: #333;
+  margin: 0 0 3mm;
+}
+
+@media print {
+  body { background: #fff; padding: 0; font-size: 9pt; }
+  .screen-bar { display: none; }
+  .sheet-head { padding: 0 0 4mm; }
+  main { padding: 0; }
+  /* 구역이 페이지를 넘어가면 층·관과 열 이름을 다시 찍는다 */
+  thead { display: table-header-group; }
+  /* 짧은 구역은 제목만 남고 잘리지 않게 통째로 넘긴다 */
+  .block.keep { break-inside: avoid; }
+}
+
+@media screen {
+  .sheet-head, main { max-width: 210mm; margin: 0 auto; }
+  .sheet-head { padding-top: 10mm; }
+}

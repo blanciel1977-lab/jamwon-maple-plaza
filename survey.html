@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>메이플자이 상가 실사표</title>
+  <meta name="description" content="잠원동 메이플자이 상가 현장 실사용 점검표." />
+  <link rel="stylesheet" href="survey.css" />
+</head>
+<body>
+  <div class="screen-bar">
+    <a href="index.html">← 안내 목록으로</a>
+    <button type="button" onclick="window.print()">인쇄 · PDF 저장</button>
+    <span>A4 세로 · 여백 기본값으로 인쇄하세요</span>
+  </div>
+
+  <header class="sheet-head">
+    <h1>메이플자이 상가 실사표</h1>
+    <p class="where">서울 서초구 잠원로4길 50 · 동관(1동) · 서관(2동)</p>
+    <p class="stat" id="stat"></p>
+    <ul class="legend">
+      <li><span class="box"></span> 확인란. 그대로면 체크, 다르면 메모에 적기</li>
+      <li><span class="swatch"></span> 음영은 호수를 아직 모르는 곳. 현장에서 호수를 적어 주세요</li>
+      <li>각 구역 끝의 빈 줄은 목록에 없는 새 가게를 적는 칸입니다</li>
+    </ul>
+    <p class="who">실사자 ______________　　날짜 ______ / ______　　연락처 ______________</p>
+  </header>
+
+  <main id="sheet"></main>
+
+  <script src="shops.js"></script>
+  <script src="survey.js"></script>
+</body>
+</html>

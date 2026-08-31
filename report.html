@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>오류 제보 · 메이플자이 상가</title>
+  <meta name="description" content="메이플자이 상가 안내 오류·신규·폐점 제보." />
+  <meta name="theme-color" content="#8b3a2a" />
+  <link rel="stylesheet" href="app.css" />
+  <style>
+    .report { max-width: 520px; margin: 0 auto; padding: 24px 20px 48px; }
+    .report h1 { font-size: 1.35rem; margin: 0 0 8px; }
+    .report .lead { color: var(--muted); font-size: 0.92rem; margin: 0 0 20px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; color: var(--muted); }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+      background: var(--card);
+      color: var(--ink);
+    }
+    .field textarea { min-height: 100px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .actions button, .actions a.btn {
+      padding: 11px 20px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+    .actions .primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+    .ok { margin-top: 16px; padding: 12px; border-radius: 8px; background: var(--chip); font-size: 0.9rem; display: none; }
+    .ok.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="report">
+    <p><a href="index.html">← 상가 목록</a> · <a href="about.html">안내</a></p>
+    <h1>오류·정보 제보</h1>
+    <p class="lead">호수·전화·폐점·신규 입점 등을 알려주세요. 확인 후 목록에 반영합니다.</p>
+
+    <form id="form">
+      <div class="field">
+        <label for="kind">종류</label>
+        <select id="kind" name="kind" required>
+          <option value="호수·위치 오류">호수·위치 오류</option>
+          <option value="전화·상호 변경">전화·상호 변경</option>
+          <option value="폐점">폐점</option>
+          <option value="신규 입점">신규 입점</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="shop">가게 이름 (알면)</label>
+        <input id="shop" name="shop" type="text" placeholder="예: 샐러링" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="detail">층·관·호수·올바른 정보</label>
+        <textarea id="detail" name="detail" placeholder="예: 서관 지하1층 2-B119가 아니라 2-B120" required></textarea>
+      </div>
+      <div class="field">
+        <label for="contact">연락처 (선택, 답변 필요 시)</label>
+        <input id="contact" name="contact" type="text" placeholder="이메일 또는 전화" autocomplete="off" />
+      </div>
+      <div class="actions">
+        <button type="submit" class="primary">GitHub으로 제보 보내기</button>
+        <button type="button" id="copy">내용 복사</button>
+        <a class="btn" id="mailto" href="#" hidden>이메일로 보내기</a>
+      </div>
+    </form>
+    <p class="ok" id="copied">클립보드에 복사했습니다. 원하시는 곳에 붙여 넣어 주세요.</p>
+  </div>
+  <script src="site-meta.js"></script>
+  <script>
+    const form = document.getElementById("form");
+    const params = new URLSearchParams(location.search);
+    if (params.get("shop")) document.getElementById("shop").value = params.get("shop");
+    if (params.get("ho")) {
+      const d = document.getElementById("detail");
+      d.value = `호수: ${params.get("ho")}\n`;
+    }
+
+    function bodyText() {
+      const kind = document.getElementById("kind").value;
+      const shop = document.getElementById("shop").value.trim();
+      const detail = document.getElementById("detail").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+      return [
+        `## 제보: ${kind}`,
+        shop ? `**가게:** ${shop}` : "",
+        `**내용:**\n${detail}`,
+        contact ? `**연락처:** ${contact}` : "",
+        "",
+        `---`,
+        `제보 페이지 · 데이터 기준일 ${SITE.verifiedAt}`
+      ].filter(Boolean).join("\n");
+    }
+
+    function issueUrl() {
+      const kind = document.getElementById("kind").value;
+      const shop = document.getElementById("shop").value.trim();
+      const title = `[제보] ${kind}${shop ? ` · ${shop}` : ""}`;
+      const q = new URLSearchParams({
+        labels: SITE.reportLabel,
+        title,
+        body: bodyText()
+      });
+      return `https://github.com/${SITE.reportRepo}/issues/new?${q}`;
+    }
+
+    if (SITE.reportEmail) {
+      const mail = document.getElementById("mailto");
+      mail.hidden = false;
+      mail.href = `mailto:${SITE.reportEmail}?subject=${encodeURIComponent("[메이플자이 상가 제보]")}&body=${encodeURIComponent(bodyText())}`;
+      mail.addEventListener("click", (e) => {
+        e.preventDefault();
+        location.href = `mailto:${SITE.reportEmail}?subject=${encodeURIComponent("[메이플자이 상가 제보]")}&body=${encodeURIComponent(bodyText())}`;
+      });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      window.open(issueUrl(), "_blank", "noopener");
+    });
+
+    document.getElementById("copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(bodyText());
+        document.getElementById("copied").classList.add("show");
+      } catch {
+        prompt("아래 내용을 복사해 주세요:", bodyText());
+      }
+    });
+  </script>
+</body>
+</html>
