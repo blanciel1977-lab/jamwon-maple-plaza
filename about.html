@@ -2,14 +2,16 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>안내 · 메이플자이 상가</title>
   <meta name="description" content="메이플자이 상가 비공식 안내 사이트 소개, 면책, 데이터 출처." />
   <meta name="theme-color" content="#8b3a2a" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="app.css" />
   <style>
-    .about { max-width: 640px; margin: 0 auto; padding: 24px 20px 48px; }
+    .about { max-width: 640px; margin: 0 auto; padding: 24px 20px calc(48px + env(safe-area-inset-bottom, 0px)); }
     .about h1 { font-size: 1.4rem; margin: 0 0 12px; }
     .about h2 { font-size: 1.05rem; margin: 28px 0 10px; }
     .about p, .about li { color: var(--muted); font-size: 0.95rem; }
@@ -31,7 +33,12 @@
 </head>
 <body>
   <div class="about">
-    <p><a href="index.html">← 상가 목록</a></p>
+    <nav class="mini-nav" aria-label="페이지">
+      <a href="index.html">층별</a>
+      <a href="upjong.html">업종별</a>
+      <a href="report.html">제보</a>
+      <a href="about.html" aria-current="page">안내</a>
+    </nav>
     <h1>메이플자이 상가 안내</h1>
     <p id="intro"></p>
 
