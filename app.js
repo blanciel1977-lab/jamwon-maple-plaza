@@ -12,13 +12,14 @@ const TRADE_SECTIONS = [
   { parent: "교육", parentClass: "", keys: ["교육"] },
   { parent: "부동산", parentClass: "", keys: ["부동산"] },
   { parent: "생활", parentClass: "", keys: ["생활"] },
-  { parent: "금융", parentClass: "", keys: ["금융"] }
+  { parent: "금융", parentClass: "", keys: ["금융"] },
+  { parent: "경영컨설팅", parentClass: "", keys: ["경영컨설팅"] }
 ];
 const TRADE_LABEL = {
   미용실: "미용실", 피부: "피부", 마사지: "마사지", 살롱: "살롱", 운동: "필라테스·운동",
-  의료: "병원·약국", 음식: "음식", 교육: "교육", 부동산: "부동산", 생활: "생활", 금융: "금융"
+  의료: "병원·약국", 음식: "음식", 교육: "교육", 부동산: "부동산", 생활: "생활", 금융: "금융", 경영컨설팅: "경영컨설팅"
 };
-const PENDING_TRADE_ORDER = ["미용실", "피부", "마사지", "살롱", "운동", "의료", "음식", "교육", "부동산", "생활", "금융"];
+const PENDING_TRADE_ORDER = ["미용실", "피부", "마사지", "살롱", "운동", "의료", "음식", "교육", "부동산", "생활", "금융", "경영컨설팅"];
 const TRADE_FILTER_KEYS = ["ALL"].concat(TRADE_SECTIONS.map((s) => s.parent));
 const TRADE_FILTER_LABEL = { ALL: "전체" };
 TRADE_SECTIONS.forEach((s) => { TRADE_FILTER_LABEL[s.parent] = s.parent; });
@@ -120,7 +121,10 @@ function roomNumber(ho) {
   return room ? Number(room) : Infinity;
 }
 
-function sortShops(list) {
+function sortShops(list, order) {
+  if (order === "name") {
+    return list.slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  }
   return list.slice().sort((a, b) => {
     const byFloor = FLOOR_ORDER.indexOf(a.floor) - FLOOR_ORDER.indexOf(b.floor);
     if (byFloor !== 0) return byFloor;
@@ -133,6 +137,79 @@ function sortShops(list) {
     }
     return a.name.localeCompare(b.name, "ko");
   });
+}
+
+/* 업종별 의료: 약국을 맨 앞에 두고, 나머지 진료과는 가나다, 그 안에서 층별 */
+function medicalKind(shop) {
+  const t = `${shop.name} ${shop.sign || ""}`;
+  if (/약국/.test(t)) return "약국";
+  if (/동물/.test(t)) return "동물병원";
+  if (/치과/.test(t)) return "치과";
+  if (/피부/.test(t)) return "피부과";
+  if (/한의/.test(t)) return "한의원";
+  if (/소아/.test(t)) return "소아청소년과";
+  if (/정형/.test(t)) return "정형외과";
+  if (/가정/.test(t)) return "가정의학과";
+  if (/내과/.test(t)) return "내과";
+  if (/발달/.test(shop.name || "")) return "발달클리닉";
+  if (/정신/.test(t)) return "정신건강의학과";
+  if (/마인드|심리/.test(t)) return "심리";
+  return "병원";
+}
+
+const MEDICAL_KIND_LAST = ["발달클리닉", "심리"];
+
+function medicalKindKeys(items) {
+  const keys = [...new Set(items.map(medicalKind))];
+  return keys.sort((a, b) => {
+    if (a === "약국") return -1;
+    if (b === "약국") return 1;
+    const aLast = MEDICAL_KIND_LAST.indexOf(a);
+    const bLast = MEDICAL_KIND_LAST.indexOf(b);
+    if (aLast !== -1 || bLast !== -1) {
+      if (aLast === -1) return -1;
+      if (bLast === -1) return 1;
+      return aLast - bLast;
+    }
+    return a.localeCompare(b, "ko");
+  });
+}
+
+function medicalGroupsHtml(items) {
+  return medicalKindKeys(items).map((kind) => {
+    const inKind = items.filter((s) => medicalKind(s) === kind);
+    const floors = FLOOR_ORDER.filter((f) => inKind.some((s) => s.floor === f));
+    const floorParts = floors.map((f) => {
+      const onFloor = inKind.filter((s) => s.floor === f);
+      return `<h5 class="floor-sub">${esc(FLOOR_LABEL[f])} <span class="count">(${onFloor.length})</span></h5>${shopTable(onFloor, "trade", "name")}`;
+    }).join("");
+    return `<h4 class="sub-heading">${esc(kind)} <span class="count">(${inKind.length})</span></h4>${floorParts}`;
+  }).join("");
+}
+
+const EDUCATION_KIND_ORDER = ["수학", "영어", "국어", "미술", "체육", "기타"];
+
+function educationKind(shop) {
+  const t = `${shop.name} ${shop.sign || ""}`;
+  if (/수학/.test(t)) return "수학";
+  if (/영어|잉글리쉬|잉글리시/.test(t)) return "영어";
+  if (/국어|독서|논술/.test(t)) return "국어";
+  if (/미술|아트|그림/.test(t)) return "미술";
+  if (/태권|발레|줄넘기|체육/.test(t)) return "체육";
+  return "기타";
+}
+
+function educationGroupsHtml(items) {
+  return EDUCATION_KIND_ORDER.map((kind) => {
+    const inKind = items.filter((s) => educationKind(s) === kind);
+    if (!inKind.length) return "";
+    const floors = FLOOR_ORDER.filter((f) => inKind.some((s) => s.floor === f));
+    const floorParts = floors.map((f) => {
+      const onFloor = inKind.filter((s) => s.floor === f);
+      return `<h5 class="floor-sub">${esc(FLOOR_LABEL[f])} <span class="count">(${onFloor.length})</span></h5>${shopTable(onFloor, "trade", "name")}`;
+    }).join("");
+    return `<h4 class="sub-heading">${esc(kind)} <span class="count">(${inKind.length})</span></h4>${floorParts}`;
+  }).join("");
 }
 
 function pendingTrade(item) {
@@ -365,10 +442,10 @@ document.addEventListener("keydown", (e) => {
   if (!morePanel.hidden) setMoreOpen(false);
 });
 
-function shopTable(list, mode) {
+function shopTable(list, mode, order) {
   if (!list.length) return `<p class="empty">없음</p>`;
   const isTrade = mode === "trade";
-  const rows = sortShops(list).map((s) => {
+  const rows = sortShops(list, order).map((s) => {
     const phone = s.phone
       ? `<a class="tel tel-btn" href="${telHref(s.phone)}"><span class="tel-cta">전화하기</span><span class="tel-num">${mark(s.phone, q)}</span></a>`
       : `<span class="no-tel">전화 없음</span>`;
@@ -622,14 +699,18 @@ function update() {
       if (!inSection.length) return "";
       const id = `sec-${i}`;
       sections.push({ id, label: sec.parent, count: inSection.length });
-      const parts = sec.keys.map((key) => {
-        const items = inSection.filter((s) => tradeOf(s) === key);
-        if (!items.length) return "";
-        const sub = sec.keys.length > 1
-          ? `<h4 class="sub-heading">${esc(TRADE_LABEL[key])} <span class="count">(${items.length})</span></h4>`
-          : "";
-        return `${sub}${shopTable(items, "trade")}`;
-      }).join("");
+      const parts = sec.parent === "의료"
+        ? medicalGroupsHtml(inSection)
+        : sec.parent === "교육"
+        ? educationGroupsHtml(inSection)
+        : sec.keys.map((key) => {
+          const items = inSection.filter((s) => tradeOf(s) === key);
+          if (!items.length) return "";
+          const sub = sec.keys.length > 1
+            ? `<h4 class="sub-heading">${esc(TRADE_LABEL[key])} <span class="count">(${items.length})</span></h4>`
+            : "";
+          return `${sub}${shopTable(items, "trade")}`;
+        }).join("");
       return `<details class="group-block" id="${id}"${open ? " open" : ""}>
         <summary class="group-heading ${sec.parentClass}">${esc(sec.parent)} <span class="count">${inSection.length}</span></summary>
         <div class="group-body">${parts}</div>

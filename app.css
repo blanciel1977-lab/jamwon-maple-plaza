@@ -544,6 +544,13 @@ h2 { font-size: 1.1rem; margin: 26px 0 10px; }
   border-bottom: 1px solid var(--line);
 }
 .group-body > .sub-heading:first-child { margin-top: 0; }
+.floor-sub {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 10px 0 6px;
+}
+.sub-heading + .floor-sub { margin-top: 2px; }
 
 /* 접이식 그룹 */
 summary {
