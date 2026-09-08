@@ -1,4 +1,4 @@
-const CACHE = "maple-shop-v7";
+const CACHE = "maple-shop-v8";
 const ASSETS = [
   "./",
   "./index.html",

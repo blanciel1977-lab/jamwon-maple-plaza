@@ -32,8 +32,8 @@ function isMobileLayout() {
 }
 
 const startParams = new URLSearchParams(location.search);
-let wing = WING_KEYS.includes(startParams.get("wing")) ? startParams.get("wing") : "ALL";
-let floor = FLOOR_KEYS.includes(startParams.get("floor")) ? startParams.get("floor") : "ALL";
+let wing = "ALL";
+let floor = "ALL";
 let q = (startParams.get("q") || "").trim();
 let focus = startParams.get("focus") === "ho" ? "ho" : "";
 let survey = startParams.get("survey") === "1";
@@ -195,7 +195,6 @@ document.getElementById("toolbar").innerHTML = `
     <button type="button" class="filter-open" id="filter-open" aria-expanded="false" aria-controls="filter-panel">
       필터 <span class="chip-count" id="filter-n" hidden></span>
     </button>
-    <div class="chips chips--wing-seg" id="wings-seg" role="group" aria-label="동·서"></div>
   </div>
   <div class="quick" id="quick-desk">
     <button type="button" class="quick-btn" id="focus-ho-desk" aria-pressed="false">호수 미확인 <span class="chip-count" id="ho-missing-n-desk"></span></button>
@@ -213,10 +212,6 @@ document.getElementById("toolbar").innerHTML = `
     <div class="menu">
       <div class="menu-label" id="trade-label">업종</div>
       <div class="chips chips--trade" id="trades" role="group" aria-labelledby="trade-label"></div>
-      <div class="menu-label" id="wing-label">동·서</div>
-      <div class="chips" id="wings" role="group" aria-labelledby="wing-label"></div>
-      <div class="menu-label" id="floor-label">층</div>
-      <div class="chips" id="floors" role="group" aria-labelledby="floor-label"></div>
     </div>
   </div>
   <p class="filter-compact" id="filter-compact" hidden></p>
@@ -224,9 +219,6 @@ document.getElementById("toolbar").innerHTML = `
 
 const searchInput = document.getElementById("q");
 const clearBtn = document.getElementById("q-clear");
-const wingChips = document.getElementById("wings");
-const wingSeg = document.getElementById("wings-seg");
-const floorChips = document.getElementById("floors");
 const tradeChips = document.getElementById("trades");
 const toolbarEl = document.getElementById("toolbar");
 const filterCompact = document.getElementById("filter-compact");
@@ -283,9 +275,7 @@ function buildChips(host, keys, labelOf) {
   host.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn || btn.disabled) return;
-    if (host === wingChips || host === wingSeg) wing = btn.dataset.key;
-    else if (host === floorChips) floor = btn.dataset.key;
-    else tradeFilter = btn.dataset.key;
+    tradeFilter = btn.dataset.key;
     focus = "";
     expandAll = null;
     update();
@@ -293,9 +283,6 @@ function buildChips(host, keys, labelOf) {
 }
 
 buildChips(tradeChips, TRADE_FILTER_KEYS, (k) => TRADE_FILTER_LABEL[k]);
-buildChips(wingChips, WING_KEYS, (k) => WING_LABEL[k]);
-buildChips(floorChips, FLOOR_KEYS, (k) => FLOOR_LABEL[k]);
-buildChips(wingSeg, ["ALL", "동관", "서관"], (k) => (k === "ALL" ? "전체" : k));
 
 let debounce;
 searchInput.addEventListener("input", () => {
@@ -576,9 +563,6 @@ function update() {
     el.setAttribute("aria-pressed", survey ? "true" : "false");
   });
 
-  updateChips(wingChips, WING_KEYS, "wing");
-  updateChips(wingSeg, ["ALL", "동관", "서관"], "wing");
-  updateChips(floorChips, FLOOR_KEYS, "floor");
   updateChips(tradeChips, TRADE_FILTER_KEYS, "trade");
 
   let shops = SHOPS.filter((s) => matchShop(s, { wing, floor, trade: tradeFilter, q }));
