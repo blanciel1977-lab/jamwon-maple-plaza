@@ -6,7 +6,7 @@ const WING_LABEL = { ALL: "전체", 동관: "동관", 서관: "서관", 미확�
 const WING_TITLE = { 동관: "동관 (1동)", 서관: "서관 (2동)", 미확인: "동·서 미확인" };
 const WING_CLASS = { 동관: "east", 서관: "west", 미확인: "unknown" };
 const TRADE_SECTIONS = [
-  { parent: "뷰티", parentClass: "beauty", keys: ["미용실", "피부", "마사지", "살롱", "운동"] },
+  { parent: "뷰티", parentClass: "beauty", keys: ["미용실", "네일", "피부", "마사지", "살롱", "운동"] },
   { parent: "의료", parentClass: "", keys: ["의료"] },
   { parent: "음식", parentClass: "", keys: ["음식"] },
   { parent: "교육", parentClass: "", keys: ["교육"] },
@@ -16,10 +16,10 @@ const TRADE_SECTIONS = [
   { parent: "경영컨설팅", parentClass: "", keys: ["경영컨설팅"] }
 ];
 const TRADE_LABEL = {
-  미용실: "미용실", 피부: "피부", 마사지: "마사지", 살롱: "살롱", 운동: "필라테스·운동",
+  미용실: "미용실", 네일: "네일", 피부: "피부", 마사지: "마사지", 살롱: "살롱", 운동: "필라테스·운동",
   의료: "병원·약국", 음식: "음식", 교육: "교육", 부동산: "부동산", 생활: "생활", 금융: "금융", 경영컨설팅: "경영컨설팅"
 };
-const PENDING_TRADE_ORDER = ["미용실", "피부", "마사지", "살롱", "운동", "의료", "음식", "교육", "부동산", "생활", "금융", "경영컨설팅"];
+const PENDING_TRADE_ORDER = ["미용실", "네일", "피부", "마사지", "살롱", "운동", "의료", "음식", "교육", "부동산", "생활", "금융", "경영컨설팅"];
 const TRADE_FILTER_KEYS = ["ALL"].concat(TRADE_SECTIONS.map((s) => s.parent));
 const TRADE_FILTER_LABEL = { ALL: "전체" };
 TRADE_SECTIONS.forEach((s) => { TRADE_FILTER_LABEL[s.parent] = s.parent; });
@@ -215,6 +215,7 @@ function educationGroupsHtml(items) {
 function pendingTrade(item) {
   const t = item.name + item.hint;
   if (/헤어|가이|미용/.test(t)) return "미용실";
+  if (/네일/.test(t)) return "네일";
   if (/살롱/.test(t)) return "살롱";
   if (/필라|피티|점핑/.test(t)) return "운동";
   if (/피부/.test(t)) return "피부";

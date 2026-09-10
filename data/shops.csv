@@ -1,4 +1,4 @@
-﻿shopId,unitId,wing,name,nameSign,phone,address,category,shopStatus,source,matchMethod,verifiedAt,notes
+shopId,unitId,wing,name,nameSign,phone,address,category,shopStatus,source,matchMethod,verifiedAt,notes
 S019,ML-5-1-1-501-502,동관,연세꿈꾸는치과의원,서초잠원점,02-537-2070,"서울특별시 서초구 잠원로4길 50, 동관 5층 1-501~502호",의료,open,directory,directory-board,2026-09-07,
 S065,ML-5-1-1-503-504,동관,페리오치과의원,,02-571-2875,"서울특별시 서초구 잠원로4길 50, 동관 5층 1-503~504호",의료,open,directory,directory-board,2026-09-07,
 S063,ML-5-1-1-505-506,동관,메종포인트발레학원,,,"서울특별시 서초구 잠원로4길 50, 동관 5층 1-505~506호",교육,open,directory,directory-board,2026-09-07,
